@@ -1,4 +1,4 @@
-package PaperProject;
+package paperProject;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
