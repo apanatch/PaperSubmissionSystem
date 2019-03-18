@@ -1,6 +1,9 @@
+package paperProject;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -8,6 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import java.awt.Font;
 
@@ -15,6 +19,10 @@ public class SubmissionStatus {
 
 	public JFrame frame;
 	private JTextField textField;
+	private JButton btnUpload;
+	private dbConnection dbConn;
+	private String firstName;
+	private String lastName;
 
 	/**
 	 * Launch the application.
@@ -36,6 +44,13 @@ public class SubmissionStatus {
 	 * Create the application.
 	 */
 	public SubmissionStatus() {
+		initialize();
+	}
+	
+	public SubmissionStatus(String fN, String lN, dbConnection dbConn) {
+		this.firstName = fN;
+		this.lastName = lN;
+		this.dbConn = dbConn;
 		initialize();
 	}
 
@@ -80,7 +95,7 @@ public class SubmissionStatus {
 	        }
 	    });
 		
-		JButton btnUpload = new JButton("Upload");
+		btnUpload = new JButton("Upload");
 		btnUpload.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
 		btnUpload.setBounds(394, 420, 117, 29);
 		frame.getContentPane().add(btnUpload);
@@ -119,6 +134,22 @@ public class SubmissionStatus {
 	        }
 	    });
 		
+		addButtonPurposes();
 	}
+	private void addButtonPurposes() {
+		btnUpload.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	JFileChooser fc = new JFileChooser();
+	            fc.setVisible(true);
+	            int val = fc.showDialog(null,"Choose");
+	            if(val == JFileChooser.APPROVE_OPTION) {
+	            	File file = fc.getSelectedFile();
+	            	textField.setText(file.getName());
+	            }
+	        }
+	    });
+	}
+	
+	
 
 }

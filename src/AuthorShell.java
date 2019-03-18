@@ -1,3 +1,5 @@
+package paperProject;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -10,6 +12,9 @@ import java.awt.Font;
 public class AuthorShell {
 
 	public JFrame frame;
+	private String firstName;
+	private String lastName;
+	private dbConnection dbConn;
 
 	/**
 	 * Launch the application.
@@ -25,12 +30,28 @@ public class AuthorShell {
 				}
 			}
 		});
+		
 	}
 
 	/**
 	 * Create the application.
 	 */
 	public AuthorShell() {
+		initialize();
+	}
+	
+	public AuthorShell(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		initialize();
+	}
+	/**
+	 * Create the application.
+	 */
+	public AuthorShell(String firstName, String lastName, dbConnection dbConn) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dbConn = dbConn;
 		initialize();
 	}
 
@@ -44,8 +65,11 @@ public class AuthorShell {
 		frame.getContentPane().setLayout(null);
 		
 		JLabel Username = new JLabel("Welcome");
+		if(firstName != null) {
+			Username.setText("Welcome " + firstName + " " + lastName);
+		}
 		Username.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
-		Username.setBounds(163, 37, 83, 16);
+		Username.setBounds(163, 37, 200, 16);
 		frame.getContentPane().add(Username);
 		//CHANGE BASED ON LOGGED IN USERNAME ^^
 		
@@ -56,7 +80,7 @@ public class AuthorShell {
 		btnSubmitPaper.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent arg0) {
 	        		frame.dispose();
-	        		SubmitPaper paper = new SubmitPaper();
+	        		SubmitPaper paper = new SubmitPaper(firstName, lastName, dbConn);
 	        		paper.frame.setVisible(true);
 	        }
 	    });
@@ -68,7 +92,7 @@ public class AuthorShell {
 		btnViewStatus.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent arg0) {
 	        		frame.dispose();
-	        		SubmissionStatus status = new SubmissionStatus();
+	        		SubmissionStatus status = new SubmissionStatus(firstName, lastName, dbConn);
 	        		status.frame.setVisible(true);
 	        }
 	    });
