@@ -165,7 +165,11 @@ public class SubmitPaper {
 		frame.getContentPane().add(scrollPane);
 		
 		//update reviewer list from database;
-		listModel = dbConn.getReviewer();
+		if(dbConn.getReviewer() != null) {
+			listModel = dbConn.getReviewer();
+		}else {
+			listModel = new DefaultListModel<String>();
+		}
 		reviewerList.setModel(listModel);
 		
 		listModel2 = new DefaultListModel<String>();
@@ -233,7 +237,11 @@ public class SubmitPaper {
 	            int val = fc.showDialog(null,"Choose");
 	            if(val == JFileChooser.APPROVE_OPTION) {
 	            	File file = fc.getSelectedFile();
-	            	textField.setText(file.getName());
+	            	if(!file.getName().endsWith("pdf")) {
+	            		JOptionPane.showMessageDialog(null, "Please submit a pdf version of your paper.");
+	            	}else {
+	            		textField.setText(file.getName());
+	            	}
 	            }
 	        }
 	    });
@@ -329,7 +337,15 @@ public class SubmitPaper {
 				reviewerList3.setModel(listModel3);
 	        }
 	    });
-	
+		btnSubmitPaper.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	//pop up window to tell successful submission
+	        	JOptionPane.showMessageDialog(null, "Your paper has been successfully submitted. Thank you for your submission! You will be redirected back to the home screen.");
+	        	frame.dispose();       		
+        		AuthorShell shell = new AuthorShell(firstName, lastName, dbConn);
+        		shell.frame.setVisible(true);
+	        }
+	    });
 		
 		
 	}

@@ -122,10 +122,12 @@ public class Login {
 	        		shell.frame.setVisible(true);
 	        	}else if(user[0].startsWith("R")) { //Reviewer
 //	        		JOptionPane.showMessageDialog(null, "You are a reviewer. Function to be implemented");
+	        		frame.dispose(); 
 	        		ReviewerShell shell = new ReviewerShell(user[1], user[2], dbConn);
 	        		shell.frame.setVisible(true);
 	        	}else if(user[0].startsWith("AD")) { //Admin
 //	        		JOptionPane.showMessageDialog(null, "You are an admin. Function to be implemented");
+	        		frame.dispose(); 
 	        		AdminShell shell = new AdminShell(user[1], user[2], dbConn);
 	        		shell.frame.setVisible(true);
 	        	}

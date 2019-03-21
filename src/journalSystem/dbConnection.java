@@ -20,8 +20,9 @@ public class dbConnection {
 	}
 	public void getConnection(){
 		try{
-			myConn = DriverManager.getConnection("jdbc:mysql://35.192.15.32/SENG300", "root", "password");
+			myConn = DriverManager.getConnection("jdbc:mysql://35.192.15.32/SENG300?autoReconnect=true&useSSL=false", "root", "password");
 			myStmt = myConn.createStatement();
+			System.out.println("Connected to google cloud SQL");
 		}
 		catch(Exception e){
 			e.printStackTrace();
