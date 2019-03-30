@@ -12,46 +12,39 @@ import java.awt.Font;
 public class AuthorShell {
 
 	public JFrame frame;
-	private String firstName;
-	private String lastName;
+	
+	private User user;
 	private dbConnection dbConn;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AuthorShell window = new AuthorShell();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					AuthorShell window = new AuthorShell();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//		
+//	}
 
 	/**
 	 * Create the application.
 	 */
-	public AuthorShell() {
-		initialize();
-	}
-	
-	public AuthorShell(String firstName, String lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		initialize();
-	}
+//	public AuthorShell() {
+//		initialize();
+//	}
 	/**
 	 * Create the application.
 	 */
-	public AuthorShell(String firstName, String lastName, dbConnection dbConn) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.dbConn = dbConn;
+	public AuthorShell(User u, dbConnection conn) {
+		this.user = u;
+		this.dbConn = conn;
 		initialize();
 	}
 
@@ -60,18 +53,17 @@ public class AuthorShell {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 450, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel Username = new JLabel("Welcome");
-		if(firstName != null) {
-			Username.setText("Welcome " + firstName + " " + lastName);
+		if(user != null) {
+			Username.setText("Welcome " + user.getfirstName() + " " + user.getLastName());
 		}
 		Username.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
 		Username.setBounds(163, 37, 200, 16);
 		frame.getContentPane().add(Username);
-		//CHANGE BASED ON LOGGED IN USERNAME ^^
 		
 		JButton btnSubmitPaper = new JButton("Submit Paper");
 		btnSubmitPaper.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
@@ -80,19 +72,44 @@ public class AuthorShell {
 		btnSubmitPaper.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent arg0) {
 	        		frame.dispose();
-	        		SubmitPaper paper = new SubmitPaper(firstName, lastName, dbConn);
+	        		SubmitPaper paper = new SubmitPaper(user, dbConn);
 	        		paper.frame.setVisible(true);
 	        }
 	    });
 		
-		JButton btnViewStatus = new JButton("View Status");
+		JButton btnSelectReviewer = new JButton("Select/Update Reviewer");
+		btnSelectReviewer.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+		btnSelectReviewer.setBounds(133, 160, 180, 29);
+		frame.getContentPane().add(btnSelectReviewer);
+		btnSelectReviewer.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent arg0) {
+	        		frame.dispose();
+	        		SelectReviewer status = new SelectReviewer(user, dbConn);
+	        		status.frame.setVisible(true);
+	        }
+	    });
+		
+		JButton btnSeeReviewer = new JButton("See My Selected Reviewer");
+		btnSeeReviewer.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+		btnSeeReviewer.setBounds(133, 200, 180, 29);
+		frame.getContentPane().add(btnSeeReviewer);
+		btnSeeReviewer.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent arg0) {
+	        	frame.dispose();
+	        	ViewSelectedReviewer status = new ViewSelectedReviewer(user, dbConn);
+        		status.frame.setVisible(true);
+	        }
+	    });
+		
+		
+		JButton btnViewStatus = new JButton("Manage Submissions");
 		btnViewStatus.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		btnViewStatus.setBounds(133, 183, 180, 29);
+		btnViewStatus.setBounds(133, 240, 180, 29);
 		frame.getContentPane().add(btnViewStatus);
 		btnViewStatus.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent arg0) {
 	        		frame.dispose();
-	        		SubmissionStatus status = new SubmissionStatus(firstName, lastName, dbConn);
+	        		SubmissionStatus status = new SubmissionStatus(user, dbConn);
 	        		status.frame.setVisible(true);
 	        }
 	    });

@@ -28,42 +28,21 @@ public class SubmitPaper {
 
 	public JFrame frame;
 	private dbConnection dbConn;
-	private String firstName;
-	private String lastName;
+	private User user;
 	
-	private JTextField textField;
+	private JTextField fileName;
+	private JTextField paperTitle;
+	
 	private JButton btnUpload;
-	
-	//for displaying all reviewers
-	private JScrollPane scrollPane;
-	private JList<String> reviewerList;
-	private DefaultListModel<String> listModel;
-	
-	//for displaying selected reviewers
-	private JScrollPane scrollPane2;
-	private JList<String> reviewerList2;
-	private DefaultListModel<String> listModel2;
-	
-	//for displaying conflicting reviewers
-	private JScrollPane scrollPane3;
-	private JList<String> reviewerList3;
-	private DefaultListModel<String> listModel3;
-	
-	//for first label
+
 	private JLabel topLabel;
-	//for second label
-	private JLabel midLabel;
-	//for third label
+	private JLabel titleLabel;
 	
 	private JButton btnLogout;
-	private JButton btnSelectReviewers;
-	private JButton btnSubmitConflict;
-	private JButton btnDeleteConflict;
-	private JButton btnDeleteReviewer;
-	private JButton btnSubmitPaper;
+	private JButton btnSubmit;
+	private JButton btnBack;
 	
-	private HashSet<String> selectedSet;
-	private HashMap<String, String> conflictReason;
+	private File fileSelected;
 	
 
 	/**
@@ -88,11 +67,12 @@ public class SubmitPaper {
 	public SubmitPaper() {
 		initialize();
 	}
-	
-	public SubmitPaper(String firstName, String lastName, dbConnection dbConn) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.dbConn = dbConn;
+	/**
+	 * Create the application.
+	 */
+	public SubmitPaper(User u, dbConnection conn) {
+		this.user = u;
+		this.dbConn = conn;
 		initialize();
 	}
 
@@ -102,28 +82,34 @@ public class SubmitPaper {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 870, 600);
+		frame.setBounds(100, 100, 870, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		topLabel = new JLabel("Please select your paper as a pdf to submit");
-		topLabel.setBounds(41, 45, 500, 20);
+		topLabel.setBounds(41, 105, 500, 20);
 		frame.getContentPane().add(topLabel);
-		
-		midLabel = new JLabel("Please select reviewers you wish to review your paper as well as any conflicts of interest:");
-		midLabel.setBounds(41, 110, 600, 20);
-		frame.getContentPane().add(midLabel);
 		
 		btnUpload = new JButton("Upload");
 		btnUpload.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		btnUpload.setBounds(459, 64, 117, 29);
+		btnUpload.setBounds(459, 124, 117, 29);
 		frame.getContentPane().add(btnUpload);
 		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setBounds(37, 64, 315, 26);
-		frame.getContentPane().add(textField);
-		textField.setColumns(10);
+		fileName = new JTextField();
+		fileName.setEditable(false);
+		fileName.setBounds(37, 124, 315, 26);
+		frame.getContentPane().add(fileName);
+		fileName.setColumns(10);
+		
+		titleLabel = new JLabel("Title of your paper:");
+		titleLabel.setBounds(41, 52, 500, 50);
+		frame.getContentPane().add(titleLabel);
+		
+		paperTitle = new JTextField();
+		paperTitle.setEditable(true);
+		paperTitle.setBounds(200, 64, 370, 26);
+		frame.getContentPane().add(paperTitle);
+		paperTitle.setColumns(10);
 		
 		btnLogout = new JButton("Logout");
 		btnLogout.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
@@ -137,97 +123,23 @@ public class SubmitPaper {
 	        }
 	    });
 		
-		if(firstName != null) {
-			JLabel nameLabel = new JLabel(firstName + " " + lastName);
+		btnSubmit = new JButton("Submit");
+		btnSubmit.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+		btnSubmit.setBounds(37, 250, 180, 29);
+		frame.getContentPane().add(btnSubmit);
+		
+		if(user != null && user.getfirstName() != null) {
+			JLabel nameLabel = new JLabel(user.getfirstName() + " " + user.getLastName());
 			nameLabel.setBounds(630,6,117,29);
 			frame.getContentPane().add(nameLabel);
 		}
 		
-		JLabel labelT1 = new JLabel("Available Reviewers");
-		labelT1.setBounds(41, 143, 600, 20);
-		frame.getContentPane().add(labelT1);
-		
-		JLabel labelT2 = new JLabel("Selected Reviewers");
-		labelT2.setBounds(281, 143, 600, 20);
-		frame.getContentPane().add(labelT2);
-		
-		JLabel labelT3 = new JLabel("Conflicting Reviewers");
-		labelT3.setBounds(521, 143, 600, 20);
-		frame.getContentPane().add(labelT3);
-		
-		//for displaying all reviewers
-		listModel = new DefaultListModel<String>();
-		reviewerList = new JList<String>(listModel);
-		scrollPane = new JScrollPane(reviewerList);
-//		scrollPane.setBounds(40, 118, 619, 210);
-		scrollPane.setBounds(40, 163, 200, 210);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		frame.getContentPane().add(scrollPane);
-		
-		//update reviewer list from database;
-		if(dbConn.getReviewer() != null) {
-			listModel = dbConn.getReviewer();
-		}else {
-			listModel = new DefaultListModel<String>();
-		}
-		reviewerList.setModel(listModel);
-		
-		listModel2 = new DefaultListModel<String>();
-		reviewerList2 = new JList<String>(listModel2);
-		scrollPane2 = new JScrollPane(reviewerList2);
-		scrollPane2.setBounds(280, 163, 200, 210);
-		scrollPane2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		frame.getContentPane().add(scrollPane2);
-		
-		listModel3 = new DefaultListModel<String>();
-		reviewerList3 = new JList<String>(listModel3);
-		scrollPane3 = new JScrollPane(reviewerList3);
-		scrollPane3.setBounds(520, 163, 300, 210);
-		scrollPane3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		frame.getContentPane().add(scrollPane3);
-		
-		btnSelectReviewers = new JButton("Add Reviewer");
-		btnSelectReviewers.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		btnSelectReviewers.setBounds(32, 380, 173, 29);
-		frame.getContentPane().add(btnSelectReviewers);
-		
-		btnSubmitConflict = new JButton("Add Conflict");
-		btnSubmitConflict.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		btnSubmitConflict.setBounds(32, 410, 173, 29);
-		frame.getContentPane().add(btnSubmitConflict);
-		
-		btnDeleteReviewer = new JButton("Remove Reviewer");
-		btnDeleteReviewer.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		btnDeleteReviewer.setBounds(273, 380, 173, 29);
-		frame.getContentPane().add(btnDeleteReviewer);
-		
-		btnDeleteConflict = new JButton("Remove Conflict");
-		btnDeleteConflict.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		btnDeleteConflict.setBounds(513, 380, 173, 29);
-		frame.getContentPane().add(btnDeleteConflict);
-		
-		btnSubmitPaper = new JButton("Submit Paper");
-		btnSubmitPaper.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-//		btnSubmitPaper.setBounds(287, 425, 117, 29);
-		btnSubmitPaper.setBounds(273, 475, 300, 30);
-		frame.getContentPane().add(btnSubmitPaper);
-		
-		JButton btnBack = new JButton("Back");
+		btnBack = new JButton("Back");
 		btnBack.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
 		btnBack.setBounds(34, 6, 117, 29);
 		frame.getContentPane().add(btnBack);
-		btnBack.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent arg0) {
-	        		frame.dispose();
-	        		AuthorShell shell = new AuthorShell(firstName, lastName, dbConn);
-	        		shell.frame.setVisible(true);
-	        }
-	    });
 		
-		//initialize hash sets
-		selectedSet = new HashSet<String>();
-		conflictReason = new HashMap<String,String>();
-		addButtonPurposes();		
+		addButtonPurposes();
 	}
 	private void addButtonPurposes() {
 		btnUpload.addActionListener(new ActionListener() {
@@ -236,117 +148,42 @@ public class SubmitPaper {
 	            fc.setVisible(true);
 	            int val = fc.showDialog(null,"Choose");
 	            if(val == JFileChooser.APPROVE_OPTION) {
-	            	File file = fc.getSelectedFile();
-	            	if(!file.getName().endsWith("pdf")) {
+	            	fileSelected = fc.getSelectedFile();
+	            	if(!fileSelected.getName().endsWith("pdf")) {
 	            		JOptionPane.showMessageDialog(null, "Please submit a pdf version of your paper.");
 	            	}else {
-	            		textField.setText(file.getName());
+	            		fileName.setText(fileSelected.getName());
 	            	}
 	            }
 	        }
 	    });
 		
-		btnSelectReviewers.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//add selected to hashset
-				for(String a : reviewerList.getSelectedValuesList()) {
-					selectedSet.add(a);
-				}
-				
-				//update listModel2 to hashSet
-				listModel2.clear();
-				for(String user : selectedSet) {
-					listModel2.addElement(user);
-				}
-				reviewerList2.setModel(listModel2);
-			}
-		});
+		btnBack.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent arg0) {
+	        		frame.dispose();
+	        		AuthorShell shell = new AuthorShell(user, dbConn);
+	        		shell.frame.setVisible(true);
+	        }
+	    });	
 		
-		btnSubmitConflict.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//for each conflict selected, pop up a window asking for reason
-				String conflict = reviewerList.getSelectedValue();
-				//if conflict selected is in reviewers wanted, show error
-				if(selectedSet.contains(conflict)) {
-					JOptionPane.showMessageDialog(null, "You cannot add a conflict with a reviewer that you have selected to review");
-					return;
-				}
-				//pop up a window to add comment
-				Object[] options = {"Add", "Cancel"};
-				JTextField reason = new JTextField(20);
-				
-				Object[] message = { "Please state your reason of conflict with:\n\n",
-						"Reviewer:", conflict,
-						"\nReason: ", reason,
-				};
-				int result = JOptionPane.showOptionDialog(null, message, "", JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION, null, options, options[0]);
-				if(result == JOptionPane.OK_OPTION) {
-					//error checking comment entered
-					while(reason.getText().length() <= 0) {
-						JOptionPane.showMessageDialog(null, "Your reason cannot be empty");
-						result = JOptionPane.showOptionDialog(null, message, "", JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION, null, options, options[0]);
-						if(result != JOptionPane.OK_OPTION){
-							break;
-						}
-					}
-					//add person and reason to conflictReason
-					conflictReason.put(conflict, reason.getText());
-					//update listModel3 with hashMap
-					listModel3.clear();
-					for(Map.Entry<String, String> entry: conflictReason.entrySet()) {
-						listModel3.addElement(entry.getKey() + ":" +entry.getValue());
-					}
-					//update window
-					reviewerList3.setModel(listModel3);
-				}
-			}
-		});
-		
-		btnDeleteReviewer.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	//delete selected from hashset
-				for(String a : reviewerList2.getSelectedValuesList()) {
-					selectedSet.remove(a);
-				}
-				
-				//update listModel2 to hashSet
-				listModel2.clear();
-				for(String user : selectedSet) {
-					listModel2.addElement(user);
-				}
-				reviewerList2.setModel(listModel2);
+		btnSubmit.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent arg0) {
+	        	if(paperTitle.getText().length() <= 0) {
+	        		JOptionPane.showMessageDialog(null, "Your paper title cannot be empty");
+	        	}else if(fileName.getText().length() <= 0) {
+	        		JOptionPane.showMessageDialog(null, "Please select your paper to submit");
+	        	}else {
+	        		//submit paper
+	        		if(dbConn.submitPaper(user, paperTitle.getText(), fileSelected)) {
+	        			JOptionPane.showMessageDialog(null, "Thanks for your submission! Please select your reviewers if you have not done so, a member of our team will review your submission shortly.");
+	        			frame.dispose();
+		        		AuthorShell shell = new AuthorShell(user, dbConn);
+		        		shell.frame.setVisible(true);
+	        		}else {
+	        			JOptionPane.showMessageDialog(null, "An error occured while submitting your paper.Please try again later.");
+	        		}
+	        	}
 	        }
 	    });
-		
-		btnDeleteConflict.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	//delete selected from hashMap
-				for(String a : reviewerList3.getSelectedValuesList()) {
-					String[] a2 = a.split(":");
-					System.out.println("removing " + a2[0]);
-					conflictReason.remove(a2[0]);
-				}
-				
-				//update listModel3 with hashMap
-				listModel3.clear();
-				for(Map.Entry<String, String> entry: conflictReason.entrySet()) {
-					System.out.println(entry.getKey() + " " + entry.getValue());
-					listModel3.addElement(entry.getKey() + ":" +entry.getValue());
-				}
-				//update window
-				reviewerList3.setModel(listModel3);
-	        }
-	    });
-		btnSubmitPaper.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	//pop up window to tell successful submission
-	        	JOptionPane.showMessageDialog(null, "Your paper has been successfully submitted. Thank you for your submission! You will be redirected back to the home screen.");
-	        	frame.dispose();       		
-        		AuthorShell shell = new AuthorShell(firstName, lastName, dbConn);
-        		shell.frame.setVisible(true);
-	        }
-	    });
-		
-		
 	}
 }

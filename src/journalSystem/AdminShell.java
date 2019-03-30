@@ -12,9 +12,8 @@ import javax.swing.JLabel;
 public class AdminShell {
 
 	public JFrame frame;
-	private String firstName;
-	private String lastName;
 	private dbConnection dbConn;
+	private User user;
 
 	/**
 	 * Launch the application.
@@ -42,10 +41,9 @@ public class AdminShell {
 	/**
 	 * Create the application.
 	 */
-	public AdminShell(String fN, String lN, dbConnection dbConn) {
-		this.firstName = fN;
-		this.lastName = lN;
-		this.dbConn = dbConn;
+	public AdminShell(User u, dbConnection conn) {
+		this.user = u;
+		this.dbConn = conn;
 		initialize();
 	}
 
@@ -71,7 +69,7 @@ public class AdminShell {
 		btnReviewAccounts.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent arg0) {
 	        		frame.dispose();
-	        		AdminReviewAccountCreations paper = new AdminReviewAccountCreations();
+	        		AdminApproveReviewer paper = new AdminApproveReviewer(user, dbConn);
 	        		paper.frame.setVisible(true);
 	        }
 	    });

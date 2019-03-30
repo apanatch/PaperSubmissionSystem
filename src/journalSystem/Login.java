@@ -6,10 +6,16 @@ import javax.swing.JFrame;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -19,14 +25,14 @@ import java.awt.event.ActionEvent;
 public class Login {
 
 	public JFrame frame;
-	private JTextField tEmail;
-	private JPasswordField tPass;
-	private JLabel labelEmail;
-	private JLabel labelPass;
-	private JLabel labelTitle;
-	private JButton bLogin;
-	private JButton bCreateAuthor;
-	private JButton bCreateReviewer;
+	private JTextField emailField;
+	private JPasswordField passField;
+//	private JLabel labelEmail;
+//	private JLabel labelPass;
+//	private JLabel labelTitle;
+	private JButton btnLogin;
+	private JButton btnCreateAuthor;
+	private JButton btnCreateReviewer;
 	
 	private dbConnection dbConn;
 
@@ -60,75 +66,145 @@ public class Login {
 		//get connection to database
 		dbConn = new dbConnection();
 		
-		//create the frame and contents
 		frame = new JFrame();
-		frame.setBounds(100, 100, 500, 350);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setBackground(UIManager.getColor("InternalFrame.activeTitleBackground"));
 		frame.getContentPane().setLayout(null);
 		
-		tEmail = new JTextField();
-		tEmail.setBounds(200, 107, 193, 26);
-		frame.getContentPane().add(tEmail);
-		tEmail.setColumns(10);
+		JPanel panel = new JPanel();
+		panel.setBounds(329, 0, 413, 468);
+		panel.setBackground(new Color(255, 255, 255));
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
 		
-		tPass = new JPasswordField();
-		tPass.setBounds(200, 145, 193, 26);
-		frame.getContentPane().add(tPass);
-		tPass.setColumns(10);
+		JLabel lblEmail = new JLabel("EMAIL");
+		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblEmail.setBounds(40, 68, 168, 25);
+		panel.add(lblEmail);
 		
-		labelEmail = new JLabel("Email Address:");
-		labelEmail.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		labelEmail.setBounds(89, 112, 99, 16);
-		frame.getContentPane().add(labelEmail);
+		JLabel lblPassword = new JLabel("PASSWORD");
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblPassword.setBounds(40, 162, 168, 25);
+		panel.add(lblPassword);
 		
-		labelPass = new JLabel("Password:");
-		labelPass.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		labelPass.setBounds(89, 150, 77, 16);
-		frame.getContentPane().add(labelPass);
+		passField = new JPasswordField();
+		passField.setBounds(40, 199, 271, 37);
+		panel.add(passField);
 		
-		bLogin = new JButton("Login");
-		bLogin.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		bLogin.setBounds(183, 195, 130, 29);
-		frame.getContentPane().add(bLogin);
+		emailField = new JTextField();
+		emailField.setBounds(40, 105, 271, 37);
+		panel.add(emailField);
+		emailField.setColumns(10);
 		
-		labelTitle = new JLabel("SYSTEM LOGIN");
-		labelTitle.setFont(new Font("Trebuchet MS", Font.BOLD, 24));
-		labelTitle.setBounds(171, 26, 162, 42);
-		frame.getContentPane().add(labelTitle);
-
-		bCreateReviewer = new JButton("Create Reviewer Account");
-		bCreateReviewer.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		bCreateReviewer.setBounds(40, 278, 193, 29);
-		frame.getContentPane().add(bCreateReviewer);
+		btnLogin = new JButton("SIGN IN");
+		btnLogin.setBackground(new Color(153, 204, 255));
+		btnLogin.setOpaque(true);
+		btnLogin.setBorderPainted(false);
+		btnLogin.setBounds(40, 279, 271, 37);
+		panel.add(btnLogin);
 		
-		bCreateAuthor = new JButton("Create Author Account");
-		bCreateAuthor.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
-		bCreateAuthor.setBounds(277, 278, 187, 29);
-		frame.getContentPane().add(bCreateAuthor);
+		btnCreateAuthor = new JButton("NEW AUTHOR");
+		btnCreateAuthor.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+		btnCreateAuthor.setBackground(new Color(153, 204, 255));
+		btnCreateAuthor.setBounds(40, 397, 128, 37);
+		btnCreateAuthor.setOpaque(true);
+		btnCreateAuthor.setBorderPainted(false);
+		panel.add(btnCreateAuthor);
+		
+		btnCreateReviewer = new JButton("NEW REVIEWER");
+		btnCreateReviewer.setBackground(new Color(153, 204, 255));
+		btnCreateReviewer.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+		btnCreateReviewer.setBounds(183, 397, 128, 37);
+		btnCreateReviewer.setOpaque(true);
+		btnCreateReviewer.setBorderPainted(false);
+		panel.add(btnCreateReviewer);
+		
+		JLabel lblDontHaveAn = new JLabel("Don't have an account yet? Sign up");
+		lblDontHaveAn.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblDontHaveAn.setBounds(40, 360, 271, 25);
+		panel.add(lblDontHaveAn);
+		
+		JLabel lblBackground = new JLabel("New label");
+		lblBackground.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 13));
+		lblBackground.setIcon(new ImageIcon(Login.class.getResource("/Pictures/LoginBackground.jpg")));
+		lblBackground.setBounds(-299, 47, 630, 433);
+		frame.getContentPane().add(lblBackground);
+		
+		JLabel lblTitle = new JLabel("SOFTWARE ENGINEERING JOURNAL");
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitle.setFont(new Font("Modern No. 20", Font.BOLD, 17));
+		lblTitle.setBounds(17, 24, 300, 34);
+		frame.getContentPane().add(lblTitle);
+		frame.setBackground(Color.WHITE);
+		frame.setBounds(100, 100, 680, 490);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//create the frame and contents
+//		frame = new JFrame();
+//		frame.setBounds(100, 100, 500, 350);
+//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.getContentPane().setLayout(null);
+//		
+//		tEmail = new JTextField();
+//		tEmail.setBounds(200, 107, 193, 26);
+//		frame.getContentPane().add(tEmail);
+//		tEmail.setColumns(10);
+//		
+//		tPass = new JPasswordField();
+//		tPass.setBounds(200, 145, 193, 26);
+//		frame.getContentPane().add(tPass);
+//		tPass.setColumns(10);
+//		
+//		labelEmail = new JLabel("Email Address:");
+//		labelEmail.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+//		labelEmail.setBounds(89, 112, 99, 16);
+//		frame.getContentPane().add(labelEmail);
+//		
+//		labelPass = new JLabel("Password:");
+//		labelPass.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+//		labelPass.setBounds(89, 150, 77, 16);
+//		frame.getContentPane().add(labelPass);
+//		
+//		bLogin = new JButton("Login");
+//		bLogin.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+//		bLogin.setBounds(183, 195, 130, 29);
+//		frame.getContentPane().add(bLogin);
+//		
+//		labelTitle = new JLabel("SYSTEM LOGIN");
+//		labelTitle.setFont(new Font("Trebuchet MS", Font.BOLD, 24));
+//		labelTitle.setBounds(171, 26, 162, 42);
+//		frame.getContentPane().add(labelTitle);
+//
+//		bCreateReviewer = new JButton("Create Reviewer Account");
+//		bCreateReviewer.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+//		bCreateReviewer.setBounds(40, 278, 193, 29);
+//		frame.getContentPane().add(bCreateReviewer);
+//		
+//		bCreateAuthor = new JButton("Create Author Account");
+//		bCreateAuthor.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+//		bCreateAuthor.setBounds(277, 278, 187, 29);
+//		frame.getContentPane().add(bCreateAuthor);
 		
 		//add purposes to buttons
 		addButtonPurpose();
 	}
 	private void addButtonPurpose() {
-		bLogin.addActionListener(new ActionListener() {
+		btnLogin.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent arg0) {
 	        	//check against user table
-	        	String[] user = dbConn.validateUser(tEmail.getText(), new String(tPass.getPassword()));
-	        	if(user[0].equals("")) {
+	        	User user = dbConn.validateUser(emailField.getText(), new String(passField.getPassword()));
+	        	if(user == null) {
 	        		JOptionPane.showMessageDialog(null, "Your email or password is incorrect.");
-	        	}else if(user[0].startsWith("AU")) { //Author
-	        		frame.dispose();       		
-	        		AuthorShell shell = new AuthorShell(user[1], user[2], dbConn);
+	        	}else if(user.getRole().startsWith("AU")) { //Author
+	        		frame.dispose();    
+	        		AuthorShell shell = new AuthorShell(user, dbConn);
 	        		shell.frame.setVisible(true);
-	        	}else if(user[0].startsWith("R")) { //Reviewer
-//	        		JOptionPane.showMessageDialog(null, "You are a reviewer. Function to be implemented");
+	        	}else if(user.getRole().startsWith("R")) { //Reviewer
 	        		frame.dispose(); 
-	        		ReviewerShell shell = new ReviewerShell(user[1], user[2], dbConn);
+	        		ReviewerShell shell = new ReviewerShell(user, dbConn);
 	        		shell.frame.setVisible(true);
-	        	}else if(user[0].startsWith("AD")) { //Admin
-//	        		JOptionPane.showMessageDialog(null, "You are an admin. Function to be implemented");
+	        	}else if(user.getRole().startsWith("AD")) { //Admin
 	        		frame.dispose(); 
-	        		AdminShell shell = new AdminShell(user[1], user[2], dbConn);
+	        		AdminShell shell = new AdminShell(user, dbConn);
 	        		shell.frame.setVisible(true);
 	        	}
 	        }
@@ -136,7 +212,7 @@ public class Login {
 
 		
 		//create a new reviewer
-		bCreateReviewer.addActionListener(new ActionListener() {
+		btnCreateReviewer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//pop up a window to add info
 				Object[] options = {"Submit", "Cancel"};
@@ -207,7 +283,7 @@ public class Login {
 		});
 		
 		//create a new author
-		bCreateAuthor.addActionListener(new ActionListener() {
+		btnCreateAuthor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//pop up a window to add info
 				Object[] options = {"Submit", "Cancel"};

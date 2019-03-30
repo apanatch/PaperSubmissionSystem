@@ -17,9 +17,10 @@ public class ReviewerShell extends JFrame {
 
 	private JPanel contentPane;
 	public static ReviewerShell frame = new ReviewerShell();
-	private String firstName;
-	private String lastName;
+//	private String firstName;
+//	private String lastName;
 	private dbConnection dbConn;
+	private User user;
 	/**
 	 * Launch the application.
 	 */
@@ -42,11 +43,12 @@ public class ReviewerShell extends JFrame {
 	public ReviewerShell() {
 		initialize();
 	}
-	
-	public ReviewerShell(String fN, String lN, dbConnection dbConn) {
-		this.firstName = fN;
-		this.lastName = lN;
-		this.dbConn = dbConn;
+	/**
+	 * Create the frame.
+	 */
+	public ReviewerShell(User user, dbConnection conn) {
+		this.user = user;
+		this.dbConn = conn;
 		initialize();
 	}
 	
